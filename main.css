@@ -1,0 +1,25 @@
+div
+{
+	border: 1px solid red;
+}
+
+.green
+{
+	background-color: green;
+}
+
+.week
+{
+	border: 1px solid black;
+}
+
+.month
+{
+	width: 100px;
+	float: left;
+}
+
+.date
+{
+	width: 20px;
+}
