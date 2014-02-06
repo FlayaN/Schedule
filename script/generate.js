@@ -47,11 +47,11 @@ function month(monthNr)
 		console.log("Month: " + months[monthNr] + " i: " + i + " monthsDay[monthNr]/7: " + Math.floor(monthsDay[monthNr]/7) + " monthsDay[monthNr]%7: " + monthsDay[monthNr]%7 + " monthsDay[monthNr]: " + monthsDay[monthNr] + " tmpCnt: " + tmpCnt);
 		if(i == Math.floor(monthsDay[monthNr]/7))
 		{
-			console.log("weird end");
+			console.log("end");
 			currWeekDayStart = 0;
 			if(monthsDay[monthNr] - tmpCnt > 6)
 			{
-				console.log("weirder end");
+				console.log("end2");
 				var tmpWeek = week(currWeek++, currWeekDayStart, 6);
 				month.appendChild(tmpWeek);
 				currWeekDayEnd = 7 - (monthsDay[monthNr] - tmpCnt);
@@ -67,7 +67,7 @@ function month(monthNr)
 		}
 		else if(i == 0 && currWeekDayEnd != 6)
 		{
-			console.log("weird start");
+			console.log("start");
 			currWeekDayStart = currWeekDayEnd+1;
 			currWeekDayEnd = 6;
 			currDay = 1;
