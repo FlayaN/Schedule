@@ -1,6 +1,12 @@
 div
 {
-	border: 1px solid red;
+	
+}
+
+td
+{
+	width: 16px;
+	text-align: center;
 }
 
 .green
@@ -10,16 +16,38 @@ div
 
 .week
 {
-	border: 1px solid black;
+	border: 2px solid black;
+	border-spacing: 0px;
+	border-bottom: none;
+}
+
+.weekLast
+{
+	border: 2px solid black;
+	border-spacing: 0px;
+}
+
+.module
+{
+	width: 800px;
+	border-spacing: 0px;
+}
+
+.inner
+{
+	float: top;
+	border-spacing: 0px;
+	height: 800px;
 }
 
 .month
 {
-	width: 100px;
+	width: 125px;
 	float: left;
+	border-spacing: 0px;
 }
 
-.date
+.weekNumber
 {
-	width: 20px;
+	color: blue;
 }
