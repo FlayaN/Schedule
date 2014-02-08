@@ -2,6 +2,27 @@ var weekDays = ["M", "T", "O", "T", "F", "L", "S"];
 
 var months = ["Jan", "Feb", "Mar", "Apr", "Maj", "Jun", "Jul", "Aug", "Sep", "Okt", "Nov", "Dec"];
 
+var groupOrderDay = [
+						[3, 4, 2, 1, 3, 3, 1], 
+						[2, 3, 1, 4, 2, 2, 4],
+						[1, 2, 4, 3, 1, 1, 3],
+						[4, 1, 3, 2, 4, 4, 2]
+					];
+					
+var groupOrderNight = 	[
+							[1, 3, 4, 2, 1, 3, 1],
+							[4, 2, 3, 1, 4, 2, 4],
+							[3, 1, 2, 4, 3, 1, 3],
+							[2, 4, 1, 3, 2, 4, 2]
+						];
+						
+var groupOrderSummer =	[
+							[1, 3, 2, 4, 3, 1, 3],
+							[4, 2, 1, 3, 2, 4, 2],
+							[3, 1, 4, 2, 1, 3, 1],
+							[2, 4, 3, 1, 4, 2, 4]
+						];
+
 var currDate = new Date();
 
 var currWeekDayStart = 0;
@@ -9,6 +30,9 @@ var currWeekDayStart = 0;
 var currWeekDayEnd = 0;
 
 var currGroup = 1;
+
+var isSummer = false;
+var summerCnt = 0;
 
 Date.prototype.getWeek = function()
 {
@@ -19,10 +43,21 @@ Date.prototype.getWeek = function()
 	return 1 + Math.round(((date.getTime() - week1.getTime()) / 86400000 - 3 + (week1.getDay() + 6) % 7) / 7);
 }
 
+function weeksInYear(year)
+{
+	var month = 11, day = 31, week;
+	do
+	{
+		var d = new Date(year, month, day--);
+		week = d.getWeek();
+	}
+	while (week == 1);
+	
+	return week;
+}
+
 window.onload = function()
 {
-	console.log(currDate.getDay());
-	
 	var min = new Date().getFullYear(),
 	max = min + 9;
     
@@ -86,8 +121,27 @@ function month()
 	var month = document.createElement('div');
 	month.className = 'month';
 	
-	var monthHeader = document.createElement('h1');
-	monthHeader.innerText = months[currDate.getMonth()];
+	var monthHeader = document.createElement('table');
+	monthHeader.className = 'monthHeader';
+	var monthName = document.createElement('div');
+	monthName.innerText = months[currDate.getMonth()];
+	monthName.className = 'test2';
+	
+	var filler = document.createElement('div');
+	filler.className = 'test2';
+	
+	var day = document.createElement('div');
+	day.className = 'test2';
+	day.innerText = 'D';
+	
+	var night = document.createElement('div');
+	night.className = 'test2';
+	night.innerText = 'N';
+	
+	monthHeader.appendChild(monthName);
+	monthHeader.appendChild(filler);
+	monthHeader.appendChild(day);
+	monthHeader.appendChild(night);
 	
 	month.appendChild(monthHeader);
 	
@@ -136,90 +190,130 @@ function month()
 	return month;
 }
 
+function getGroup(weekDay, day)
+{
+	var tmpVal = 53;
+	
+	for(var year = 2014; year < currDate.getFullYear(); year++)
+	{
+		tmpVal += weeksInYear(year);
+	}
+	
+	var odd = tmpVal % 2;
+	
+	var weekNr = currDate.getWeek() - odd;
+	
+	if(!isSummer)
+	{
+		if(currDate.getMonth() == 5 && weekDay == 0)
+		{
+			for(var i = 2; i <= 8; i++)
+			{
+				if(currDate.getDate() == i)
+					isSummer = true;
+			}
+		}
+	}
+	
+	if(isSummer)
+	{
+		summerCnt++;
+		if(summerCnt > 84*2)
+		{
+			summerCnt = 0;
+			isSummer = false;
+		}
+		return groupOrderSummer[(weekNr+2) % 4][weekDay];
+	}
+	else
+	{
+		if(day)
+			return groupOrderDay[weekNr % 4][weekDay];
+		else
+			return groupOrderNight[weekNr % 4][weekDay];
+	}
+}
+
 function week(start, stop)
 {
 	
 	var week = document.createElement('table');
+
+	var tmpDate = new Date();
+	tmpDate.setFullYear(currDate.getYear(), currDate.getMonth() + 1, 0);
+	var maxDays = tmpDate.getDate();
 	
-	if(stop == 6)
-		week.className = 'week';
-	else
+	if(currDate.getDate() + stop == maxDays)
 		week.className = 'weekLast';
+	else
+		week.className = 'week';
 	
 	for(var i = start; i <= stop; i++)
 	{
-		var tmpGroup = Math.floor(Math.random() * (4 - 1 + 1) + 1);
+		var dayGroup = getGroup(i, true);
+		var nightGroup = getGroup(i, false);
+		
 		if(i == start)
-			week.appendChild(dayWithWeekNr(weekDays[i], tmpGroup, tmpGroup, currDate.getWeek()));
+			week.appendChild(day(weekDays[i], dayGroup, nightGroup, true));
 		else
-			week.appendChild(day(weekDays[i], tmpGroup, tmpGroup));
+			week.appendChild(day(weekDays[i], dayGroup, nightGroup, false));
 			
 		currDate.setDate(currDate.getDate()+1);
 	}
 	return week;
 }
 
-function day(weekDayIn, groupDayIn, groupNightIn)
+function day(weekDayIn, groupDayIn, groupNightIn, showWeekNr)
 {
-	var day = document.createElement('tr');
+	var day = document.createElement('div');
 	day.className = 'day';
 	
-	var date = document.createElement('td');
+	var date = document.createElement('div');
 	date.innerText = currDate.getDate().toString();
+	date.className = 'test';
 	
-	var weekDay = document.createElement('td');
+	var weekDay = document.createElement('div');
 	weekDay.innerText = weekDayIn;
+	weekDay.className = 'test';
 	
-	var groupDay = document.createElement('td');
+	var groupDay = document.createElement('div');
 	groupDay.innerText = groupDayIn;
+	groupDay.className = 'test';
+	
+	var groupNight = document.createElement('div');
+	groupNight.innerText = groupNightIn;
+	groupNight.className = 'test';
+	
+	var weekNr = document.createElement('div');
+	weekNr.className = 'weekNumber test';
+	
+	if(showWeekNr)
+	{
+		weekNr.innerText = currDate.getWeek().toString();
+		
+	}
+	else
+	{
+		weekNr.innerText = ' ';
+	}
 	
 	if(groupDayIn == currGroup)
-		groupDay.className = 'green';
-	
-	var groupNight = document.createElement('td');
-	groupNight.innerText = groupNightIn;
+		groupDay.className = 'green test';
 	
 	if(groupNightIn == currGroup)
-		groupNight.className = 'green';
-	
-	day.appendChild(date);
-	day.appendChild(weekDay);
-	day.appendChild(groupDay);
-	day.appendChild(groupNight);
-	return day;
-}
-
-function dayWithWeekNr(weekDayIn, groupDayIn, groupNightIn, weekNrIn)
-{
-	var day = document.createElement('tr');
-	day.className = 'day';
-	
-	var date = document.createElement('td');
-	date.innerText = currDate.getDate().toString();
-	
-	var weekDay = document.createElement('td');
-	weekDay.innerText = weekDayIn;
-	
-	var groupDay = document.createElement('td');
-	groupDay.innerText = groupDayIn;
-	
-	if(groupDayIn == currGroup)
-		groupDay.className = 'green';
-	
-	var groupNight = document.createElement('td');
-	groupNight.innerText = groupNightIn;
-	
-	if(groupNightIn == currGroup)
-		groupNight.className = 'green';
-	
-	var weekNr = document.createElement('td');
-	weekNr.className = 'weekNumber';
-	weekNr.innerText = weekNrIn.toString();
+		groupNight.className = 'green test';
+		
+	if(weekDayIn == 'S')
+		weekDay.className = 'red test';
+		
+	if(isSummer)
+		weekNr.className = 'weekNumber test pink'
 	
 	day.appendChild(date);
 	day.appendChild(weekDay);
 	day.appendChild(groupDay);
 	day.appendChild(groupNight);
 	day.appendChild(weekNr);
+	
 	return day;
 }
