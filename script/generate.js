@@ -23,7 +23,7 @@ var groupOrderSummer =	[
 							[2, 4, 3, 1, 4, 2, 4]
 						];
 
-var currDate = new Date();
+var currDate;
 
 var currWeekDayStart = 0;
 
@@ -33,6 +33,8 @@ var currGroup = 1;
 
 var isSummer = false;
 var summerCnt = 0;
+
+var redDays = new Array();
 
 Date.prototype.getWeek = function()
 {
@@ -54,6 +56,28 @@ function weeksInYear(year)
 	while (week == 1);
 	
 	return week;
+}
+
+
+function easterForYear(year)
+{
+	var a = year % 19;
+	var b = Math.floor(year / 100);
+	var c = year % 100;
+	var d = Math.floor(b / 4); 
+	var e = b % 4;
+	var f = Math.floor((b + 8) / 25);
+	var g = Math.floor((b - f + 1) / 3); 
+	var h = (19 * a + b - d - g + 15) % 30;
+	var i = Math.floor(c / 4);
+	var k = c % 4;
+	var l = (32 + 2 * e + 2 * i - h - k) % 7;
+	var m = Math.floor((a + 11 * h + 22 * l) / 451);
+	var n0 = (h + l + 7 * m + 114)
+	var n = Math.floor(n0 / 31) - 1;
+	var p = n0 % 31 + 1;
+	var date = new Date(year,n,p);
+	return date; 
 }
 
 window.onload = function()
@@ -78,10 +102,55 @@ window.onload = function()
 	}
 }
 
+function generateRedDays()
+{
+	redDays.push(new Date(currDate.getFullYear(), 0, 1));
+	redDays.push(new Date(currDate.getFullYear(), 0, 6));
+	
+	var longFriday = easterForYear(currDate.getFullYear());
+	longFriday.setDate(longFriday.getDate()-2);
+	redDays.push(longFriday);
+	
+	var otherdayEaster = easterForYear(currDate.getFullYear());
+	otherdayEaster.setDate(otherdayEaster.getDate()+1);
+	redDays.push(otherdayEaster);
+	
+	redDays.push(new Date(currDate.getFullYear(), 4, 1));
+	
+	var kristi = easterForYear(currDate.getFullYear());
+	kristi.setDate(kristi.getDate()+39);
+	redDays.push(kristi);
+	
+	redDays.push(new Date(currDate.getFullYear(), 5, 6));
+	
+	for(var i = 18; i < 25; i++)
+	{
+		var tmpDate = new Date(currDate.getFullYear(), 5, i);
+		if(tmpDate.getDay() == 6)
+			redDays.push(tmpDate);
+	}
+	
+	var tmpDate = new Date(currDate.getFullYear(), 9, 31);
+	if(tmpDate.getDay() == 6)
+		redDays.push(tmpDate);
+	
+	for(var i = 1; i < 6; i++)
+	{
+		var tmpDate = new Date(currDate.getFullYear(), 10, i);
+		if(tmpDate.getDay() == 6)
+			redDays.push(tmpDate);
+	}
+	
+	redDays.push(new Date(currDate.getFullYear(), 11, 25));
+	redDays.push(new Date(currDate.getFullYear(), 11, 26));
+}
+
 function generateTest()
 {
 	var e = document.getElementById('selectYear');
-	currDate.setFullYear(e.options[e.selectedIndex].value, 0, 1);
+	currDate = new Date(e.options[e.selectedIndex].value, 0, 1);
+	
+	generateRedDays();
 	
 	e = document.getElementById('group');
 	currGroup = e.options[e.selectedIndex].value;
@@ -239,8 +308,7 @@ function week(start, stop)
 	
 	var week = document.createElement('table');
 
-	var tmpDate = new Date();
-	tmpDate.setFullYear(currDate.getYear(), currDate.getMonth() + 1, 0);
+	var tmpDate = new Date(currDate.getYear(), currDate.getMonth() + 1, 0);
 	var maxDays = tmpDate.getDate();
 	
 	if(currDate.getDate() + stop == maxDays)
@@ -305,7 +373,13 @@ function day(weekDayIn, groupDayIn, groupNightIn, showWeekNr)
 		
 	if(weekDayIn == 'S')
 		weekDay.className = 'red test';
-		
+	
+	for(var i = 0; i < redDays.length; i++)
+	{
+		if(dates.compare(redDays[i], currDate) == 0)
+			weekDay.className = 'red test';
+	}
+	
 	if(isSummer)
 		weekNr.className = 'weekNumber test pink'
 	
