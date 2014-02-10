@@ -9,6 +9,12 @@ td
 	background-color: green;
 }
 
+.green2
+{
+	background-color: green;
+	color: white;
+}
+
 .red
 {
 	background-color: red;
@@ -17,6 +23,7 @@ td
 .black
 {
 	background-color: black;
+	color: white;
 }
 
 .pink
@@ -24,19 +31,32 @@ td
 	background-color: pink;
 }
 
+.yellow
+{
+	background-color: yellow;
+}
 
+.beige
+{
+	background-color: #D4D272;
+}
 
 .module
 {
-	width: 1000px;
 	border-spacing: 0px;
 }
 
-.inner
+.year
 {
 	float: top;
 	border-spacing: 0px;
-	height: 600px;
+	height: 550px;
+}
+
+.yearHeader
+{
+	float: top;
+	border-spacing: 0px;
 }
 
 .month
