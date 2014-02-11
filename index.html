@@ -2,19 +2,19 @@
 	<head>
 		<meta http-equiv="content-type" content="text/html; charset=utf-8" />
 		<link rel="stylesheet" type="text/css" href="main.css">
+		<link rel="stylesheet" type="text/css" media="print" href="print.css">
 		<script type="text/javascript" src="script/utilities/jquery-2.0.3.js"></script>
+		<script type="text/javascript" src="script/utilities/dates.js"></script>
 		<script type="text/javascript" src="script/generate.js"></script>
-		<script type="text/javascript" src="script/dates.js"></script>
 	</head>
 	
-	<body>
+	<body onload="generate()">
 		<div id="main">
-			<div id="header">
-				<button onclick="generate()">Generera</button>
+			<div id="content"></div>
+			<div id="footer">
 				Grupp:
 				<select id="group" onchange="changeActive()"></select>
 			</div>
-			<div id="content"></div>
 		</div>
 	</body>
 </html>

@@ -1,7 +1,11 @@
-td
+body
 {
-	width: 16px;
-	text-align: center;
+	-webkit-print-color-adjust: exact;
+}
+
+p
+{
+	font-weight: bold;
 }
 
 .green
@@ -48,9 +52,9 @@ td
 
 .year
 {
-	float: top;
+	width: 680px;
 	border-spacing: 0px;
-	height: 550px;
+	height: 500px;
 }
 
 .yearHeader
@@ -61,29 +65,30 @@ td
 
 .month
 {
-	width: 154px;
+	width: 107px;
 	float: left;
 	border-spacing: 0px;
 }
 
 .monthHeader
 {
-	width: 154px;
+	width: 107px;
 	border-spacing: 0px;
 	text-align: center;
 	padding-left: 3px;
+	padding-bottom: 1px;
 }
 
 .week
 {
-	border: 4px solid black;
+	border: 2px solid black;
 	border-spacing: 0px;
 	border-bottom: none;
 }
 
 .weekLast
 {
-	border: 4px solid black;
+	border: 2px solid black;
 	border-spacing: 0px;
 }
 
@@ -94,22 +99,27 @@ td
 
 .day
 {
-	width: 150px;
-	height: 16px;
+	width: 105px;
+	height: 14px;
 	text-align: center;
 	font-weight: bold;
+	font-size: 14px;
 }
 
 .test
 {
 	float: left;
-	width: 30px;
-	height: 16px;
+	width: 21px;
+	height: 14px;
+	text-align: center;
+	padding-bottom: 1px;
 }
 
 .test2
 {
 	float: left;
-	width: 30px;
-	height: 16px;
+	width: 21px;
+	height: 14px;
+	font-weight: bold;
+	font-size: 14px;
 }

@@ -70,17 +70,6 @@ function easterForYear(year)
 	return date; 
 }
 
-window.onload = function()
-{
-	for(var i = 0; i <= 4; i++)
-	{
-		var opt = document.createElement('option');
-		opt.value = i;
-		opt.innerHTML = i;
-		document.getElementById('group').appendChild(opt);
-	}
-}
-
 function generateRedDays(year)
 {
 	var redDays = new Array();
@@ -103,7 +92,7 @@ function generateRedDays(year)
 	
 	redDays.push(new Date(year, 5, 6));
 	
-	for(var i = 18; i < 25; i++)
+	for(var i = 19; i < 26; i++)
 	{
 		var tmpDate = new Date(year, 5, i);
 		if(tmpDate.getDay() == 6)
@@ -185,11 +174,18 @@ function changeActive()
 
 function generate()
 {
+	for(var i = 0; i <= 4; i++)
+	{
+		var opt = document.createElement('option');
+		opt.value = i;
+		opt.innerHTML = i;
+		document.getElementById('group').appendChild(opt);
+	}
 	
 	var module = document.createElement('div');
 	module.className = 'module';
 	
-	for(var i = 2014; i < 2020; i++)
+	for(var i = 2014; i <= 2019; i++)
 	{
 		var tmpYear = {};
 		
@@ -203,21 +199,30 @@ function generate()
 		
 		years.push(tmpYear);
 		
-		var year = document.createElement('div');
-		year.className = 'year';
-		
-		var yearHeader = document.createElement('h1');
+		var yearHeader = document.createElement('p');
 		yearHeader.className = 'yearHeader';
 		yearHeader.innerText = i;
 		
 		module.appendChild(yearHeader);
 		
-		for(var j = 0; j < 12; j++)
+		var yearHalf1 = document.createElement('div');
+		yearHalf1.className = 'year';
+		
+		for(var j = 0; j < 6; j++)
 		{
-			year.appendChild(month());
+			yearHalf1.appendChild(month());
+		}
+		
+		var yearHalf2 = document.createElement('div');
+		yearHalf2.className = 'year';
+		
+		for(var j = 0; j < 6; j++)
+		{
+			yearHalf2.appendChild(month());
 		}
 	
-		module.appendChild(year);
+		module.appendChild(yearHalf1);
+		module.appendChild(yearHalf2);
 		currYearIndex++;
 	}
 	
@@ -303,38 +308,45 @@ function month()
 	return month;
 }
 
-function getGroup(weekDay, day)
+function getWeek(dateIn)
 {
-	var tmpVal = 53;
+	var tmpVal = -1;
 	
 	for(var year = 2014; year < years[currYearIndex].currDate.getFullYear(); year++)
 	{
 		tmpVal += weeksInYear(year);
 	}
-	
-	var odd = tmpVal % 2;
-	
-	var weekNr = years[currYearIndex].currDate.getWeek() - odd;
-	
-	if(!years[currYearIndex].isSummer)
+	if(dateIn.getWeek() == 53)
 	{
-		if(years[currYearIndex].currDate.getMonth() == 5 && weekDay == 0)
+		return dateIn.getWeek() - 1;
+	}
+	else
+		return (tmpVal%52) + dateIn.getWeek();
+}
+
+function getGroup(weekDay, yearObjIn, day)
+{
+	var weekNr = getWeek(yearObjIn.currDate);
+	
+	if(!yearObjIn.isSummer)
+	{
+		if(yearObjIn.currDate.getMonth() == 5 && weekDay == 0)
 		{
 			for(var i = 2; i <= 8; i++)
 			{
-				if(years[currYearIndex].currDate.getDate() == i)
-					years[currYearIndex].isSummer = true;
+				if(yearObjIn.currDate.getDate() == i)
+					yearObjIn.isSummer = true;
 			}
 		}
 	}
 	
-	if(years[currYearIndex].isSummer)
+	if(yearObjIn.isSummer)
 	{
-		years[currYearIndex].summerCnt++;
-		if(years[currYearIndex].summerCnt > 84*2)
+		yearObjIn.summerCnt++;
+		if(yearObjIn.summerCnt > 84*2)
 		{
-			years[currYearIndex].summerCnt = 0;
-			years[currYearIndex].isSummer = false;
+			yearObjIn.summerCnt = 0;
+			yearObjIn.isSummer = false;
 		}
 		return groupOrderSummer[(weekNr+2) % 4][weekDay];
 	}
@@ -362,8 +374,8 @@ function week(start, stop)
 	
 	for(var i = start; i <= stop; i++)
 	{
-		var dayGroup = getGroup(i, true);
-		var nightGroup = getGroup(i, false);
+		var dayGroup = getGroup(i, years[currYearIndex], true);
+		var nightGroup = getGroup(i, years[currYearIndex], false);
 		
 		if(i == start)
 			week.appendChild(day(weekDays[i], dayGroup, nightGroup, true));
@@ -391,10 +403,12 @@ function day(weekDayIn, groupDayIn, groupNightIn, showWeekNr)
 	var groupDay = document.createElement('div');
 	groupDay.innerText = groupDayIn;
 	groupDay.className = 'test';
+	groupDay.orig = groupDayIn;
 	groupDay.ondragstart = function()
 	{
 		var id = 'drag-' + (new Date()).getTime();
 		this.id = id;
+		$('#' + id).data("extraData", {originalGroup: groupDayIn});
 		event.dataTransfer.setData("source", id);
 	}
 	groupDay.ondragover = function()
@@ -403,6 +417,7 @@ function day(weekDayIn, groupDayIn, groupNightIn, showWeekNr)
 	}
 	groupDay.ondrop = function()
 	{
+		var origGroup = $('#' + event.dataTransfer.getData("source")).data("extraData").originalGroup;
 		event.preventDefault();
 		if($('#' + event.dataTransfer.getData("source")).html() == this.innerText)
 			return;
@@ -419,16 +434,23 @@ function day(weekDayIn, groupDayIn, groupNightIn, showWeekNr)
 			this.className = 'test green2';
 		else
 			this.className = 'test black';
+			
+		if(origGroup == tmp)
+			$('#' + event.dataTransfer.getData("source")).attr('class', 'test');
+		if(this.innerText == groupDay.orig)
+			this.className = 'test';
 	}
 	groupDay.draggable = true;
 	
 	var groupNight = document.createElement('div');
 	groupNight.innerText = groupNightIn;
 	groupNight.className = 'test';
+	groupNight.orig = groupNightIn;
 	groupNight.ondragstart = function()
 	{
 		var id = 'drag-' + (new Date()).getTime();
 		this.id = id;
+		$('#' + id).data("extraData", {originalGroup: groupNightIn});
 		event.dataTransfer.setData("source", id);
 	}
 	groupNight.ondragover = function()
@@ -437,6 +459,7 @@ function day(weekDayIn, groupDayIn, groupNightIn, showWeekNr)
 	}
 	groupNight.ondrop = function()
 	{
+		var origGroup = $('#' + event.dataTransfer.getData("source")).data("extraData").originalGroup;
 		event.preventDefault();
 		if($('#' + event.dataTransfer.getData("source")).html() == this.innerText)
 			return;
@@ -453,6 +476,11 @@ function day(weekDayIn, groupDayIn, groupNightIn, showWeekNr)
 			this.className = 'test green2';
 		else
 			this.className = 'test black';
+			
+		if(origGroup == tmp)
+			$('#' + event.dataTransfer.getData("source")).attr('class', 'test');
+		if(this.innerText == groupNight.orig)
+			this.className = 'test';
 	}
 	groupNight.draggable = true;
 	
