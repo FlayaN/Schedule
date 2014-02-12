@@ -116,10 +116,9 @@ function generateRedDays(year)
 	return redDays;
 }
 
-function changeActive()
+function changeActive(newGroup)
 {
-	var e = document.getElementById('group');
-	currGroup = e.options[e.selectedIndex].value;
+	currGroup = newGroup;
 	
 	var inners = $("div").find("#content")[0].children[0].children;
 	
@@ -131,7 +130,7 @@ function changeActive()
 			var weeks = months[j].children;
 			for(var k = 0; k < weeks.length; k++)
 			{
-				if(weeks[k].className == "week" || weeks[k].className == "weekLast")
+				if(weeks[k].className == "week")// || weeks[k].className == "weekLast")
 				{
 					var days = weeks[k].children;
 					for(var l = 0; l < days.length; l++)
@@ -174,14 +173,6 @@ function changeActive()
 
 function generate()
 {
-	for(var i = 0; i <= 4; i++)
-	{
-		var opt = document.createElement('option');
-		opt.value = i;
-		opt.innerHTML = i;
-		document.getElementById('group').appendChild(opt);
-	}
-	
 	var module = document.createElement('div');
 	module.className = 'module';
 	
@@ -231,7 +222,7 @@ function generate()
 	else
 		document.getElementById('content').replaceChild(module, document.getElementById('content').childNodes[0]);
 	
-	changeActive();
+	changeActive(0);
 }
 
 function month()
@@ -367,10 +358,10 @@ function week(start, stop)
 	var tmpDate = new Date(years[currYearIndex].currDate.getYear(), years[currYearIndex].currDate.getMonth() + 1, 0);
 	var maxDays = tmpDate.getDate();
 	
-	if(years[currYearIndex].currDate.getDate() + stop == maxDays)
+	/*if(years[currYearIndex].currDate.getDate() + stop == maxDays)
 		week.className = 'weekLast';
-	else
-		week.className = 'week';
+	else*/
+	week.className = 'week';
 	
 	for(var i = start; i <= stop; i++)
 	{

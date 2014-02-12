@@ -65,14 +65,14 @@ p
 
 .month
 {
-	width: 107px;
+	width: 106px;
 	float: left;
 	border-spacing: 0px;
 }
 
 .monthHeader
 {
-	width: 107px;
+	width: 106px;
 	border-spacing: 0px;
 	text-align: center;
 	padding-left: 3px;
@@ -81,15 +81,15 @@ p
 
 .week
 {
-	border: 2px solid black;
+	border: 1px solid black;
 	border-spacing: 0px;
 	border-bottom: none;
+	position: relative;
 }
 
-.weekLast
+.week:last-child
 {
-	border: 2px solid black;
-	border-spacing: 0px;
+	border: 1px solid black;
 }
 
 .weekNumber
@@ -101,9 +101,7 @@ p
 {
 	width: 105px;
 	height: 14px;
-	text-align: center;
 	font-weight: bold;
-	font-size: 14px;
 }
 
 .test
@@ -112,7 +110,9 @@ p
 	width: 21px;
 	height: 14px;
 	text-align: center;
-	padding-bottom: 1px;
+	line-height: 14px;
+	vertical-align: middle;
+	font-size: 14px;
 }
 
 .test2

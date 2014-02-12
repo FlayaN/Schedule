@@ -6,10 +6,14 @@
 .year
 {
 	padding-left: 40px;
+	width: 680px;
+	border-spacing: 0px;
+	height: 500px;
 }
 
 .yearHeader
 {
 	padding-left: 40px;
+	float: top;
+	border-spacing: 0px;
 }
-
