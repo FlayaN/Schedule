@@ -173,6 +173,8 @@ function changeActive(newGroup)
 
 function generate()
 {
+	document.title = "Schema 2015-2018";
+	
 	var module = document.createElement('div');
 	module.className = 'module';
 	

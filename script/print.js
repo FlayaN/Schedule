@@ -20,6 +20,6 @@ function printTest()
 	changeActive(4);
 	window.print();
 	
-	document.title = "Schedule";
+	document.title = "Schema 2015-2018";
 	changeActive(0);
 }
