@@ -1,6 +1,6 @@
 var weekDays = ["M", "T", "O", "T", "F", "L", "S"];
 
-var months = ["Jan", "Feb", "Mar", "Apr", "Maj", "Jun", "Jul", "Aug", "Sep", "Okt", "Nov", "Dec"];
+var months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
 var groupOrderDay = [
 						[3, 4, 2, 1, 3, 3, 1], 
@@ -25,6 +25,12 @@ var groupOrderSummer =	[
 var years = new Array();
 var currGroup = 0;
 var currYearIndex = 0;
+
+var group0 = ics("Grupp 1-4");
+var group1 = ics("Grupp 1");
+var group2 = ics("Grupp 2");
+var group3 = ics("Grupp 3");
+var group4 = ics("Grupp 4");
 
 Date.prototype.getWeek = function()
 {
@@ -124,10 +130,10 @@ function changeActive(newGroup)
 	
 	for(var i = 0; i < inners.length; i++)
 	{
-		var months = inners[i].children;
-		for(var j = 0; j < months.length; j++)
+		var monthsTmp = inners[i].children;
+		for(var j = 0; j < monthsTmp.length; j++)
 		{
-			var weeks = months[j].children;
+			var weeks = monthsTmp[j].children;
 			for(var k = 0; k < weeks.length; k++)
 			{
 				if(weeks[k].className == "week")// || weeks[k].className == "weekLast")
@@ -168,6 +174,94 @@ function changeActive(newGroup)
 				}
 			}
 		}
+	}
+}
+
+function fillCal(cal, newGroup)
+{
+	currGroup = newGroup;
+	
+	var inners = $("div").find("#content")[0].children[0].children;
+	
+	var year = "2014";
+	var month = "Jan";
+	
+	for(var i = 0; i < inners.length; i++)
+	{
+		if(i % 3 == 0)
+			year = inners[i].textContent;
+		else
+		{
+			var monthsTmp = inners[i].children;
+			for(var j = 0; j < monthsTmp.length; j++)
+			{
+				var weeks = monthsTmp[j].children;
+				for(var k = 0; k < weeks.length; k++)
+				{
+					if(weeks[k].className == "monthHeader")
+					{
+						month = weeks[k].children[0].textContent;
+					}
+					if(weeks[k].className == "week")
+					{
+						var days = weeks[k].children;
+						for(var l = 0; l < days.length; l++)
+						{
+							var day = false;
+							var night = false;
+							if(currGroup.toString() == days[l].children[2].firstChild.data)
+							{
+								day = true;
+							}
+							
+							if(currGroup.toString() == days[l].children[3].firstChild.data)
+							{
+								night = true;
+							}
+							
+							if(day || night)
+							{
+								var dateStart = new Date(Number(year), months.indexOf(month), Number(days[l].children[0].innerText));
+								var dateEnd = new Date(Number(year), months.indexOf(month), Number(days[l].children[0].innerText));
+								if(day && night)
+								{
+									if(dateStart.getDay() == 6 || dateStart.getDay() == 0)
+										dateStart.setHours(9, 0, 0);
+									else
+										dateStart.setHours(8, 0, 0);
+									
+									dateEnd.setDate(dateEnd.getDate()+1);
+									if(dateEnd.getDay() == 0)
+										dateEnd.setHours(9, 0, 0);
+									else
+										dateEnd.setHours(8, 0, 0);
+									
+									cal.addEvent('Dygn', 'Grupp ' + currGroup, dateStart, dateEnd);
+								}
+								else if(day)
+								{
+									dateStart.setHours(8, 0, 0);
+									dateEnd.setHours(18, 0, 0);
+									cal.addEvent('Dag', 'Grupp ' + currGroup, dateStart, dateEnd);
+								}
+								else if(night)
+								{
+									
+									dateStart.setHours(18, 0, 0);
+									dateEnd.setDate(dateEnd.getDate()+1);
+									if(dateEnd.getDay() == 6)
+										dateEnd.setHours(9, 0, 0);
+									else
+										dateEnd.setHours(8, 0, 0);
+									cal.addEvent('Natt', 'Grupp ' + currGroup, dateStart, dateEnd);
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+		
 	}
 }
 

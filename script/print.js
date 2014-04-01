@@ -23,3 +23,24 @@ function printTest()
 	document.title = "Schema 2015-2018";
 	changeActive(0);
 }
+
+function icsTest()
+{
+	fillCal(group0, 1);
+	fillCal(group0, 2);
+	fillCal(group0, 3);
+	fillCal(group0, 4);
+	group0.download('0');
+	
+	fillCal(group1, 1);
+	group1.download('1');
+	
+	fillCal(group2, 2);
+	group2.download('2');
+	
+	fillCal(group3, 3);
+	group3.download('3');
+	
+	fillCal(group4, 4);
+	group4.download('4');
+}
