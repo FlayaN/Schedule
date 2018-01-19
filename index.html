@@ -11,10 +11,15 @@
 		<script type="text/javascript" src="script/print.js"></script>
 	</head>
 	
-	<body onload="generate()">
+	<body>
+		From: <input id="from" type="text" value="2019" />
+		To: <input id="to" type="text" value="2022" />
+		
+		<button onclick="generate()">Generate</button>
+
 		<div id="main">
 			<div id="content"></div>
-			<div id="footer">
+			<div id="footer" style="display: none">
 				<button onclick="printTest()">print</button>
 				<button onclick="icsTest()">ics</button>
 			</div>

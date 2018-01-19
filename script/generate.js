@@ -183,7 +183,7 @@ function fillCal(cal, newGroup)
 	
 	var inners = $("div").find("#content")[0].children[0].children;
 	
-	var year = "2014";
+	var year = currStartYear.toString();
 	var month = "Jan";
 	
 	for(var i = 0; i < inners.length; i++)
@@ -265,14 +265,20 @@ function fillCal(cal, newGroup)
 	}
 }
 
+var currStartYear;
+var currEndYear;
+
 function generate()
 {
-	document.title = "Schema 2015-2018";
+	currStartYear = document.getElementById("from").value;
+	currEndYear = document.getElementById("to").value;
+
+	document.title = "Schema " + currStartYear + "-" + currEndYear;
 	
 	var module = document.createElement('div');
 	module.className = 'module';
 	
-	for(var i = 2014; i <= 2019; i++)
+	for(var i = currStartYear; i <= currEndYear; i++)
 	{
 		var tmpYear = {};
 		
@@ -319,6 +325,8 @@ function generate()
 		document.getElementById('content').replaceChild(module, document.getElementById('content').childNodes[0]);
 	
 	changeActive(0);
+
+	document.getElementById('footer').style.display = null;
 }
 
 function month()
@@ -399,7 +407,7 @@ function getWeek(dateIn)
 {
 	var tmpVal = -1;
 	
-	for(var year = 2014; year < years[currYearIndex].currDate.getFullYear(); year++)
+	for(var year = currStartYear; year < years[currYearIndex].currDate.getFullYear(); year++)
 	{
 		tmpVal += weeksInYear(year);
 	}
